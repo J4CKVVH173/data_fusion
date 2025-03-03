@@ -2,7 +2,7 @@ use std::{path::Path, sync::{Arc, RwLock}};
 use std::thread::{available_parallelism, self};
 use std::fs;
 
-use crate::fusion::{application::traits::PrepareFiles, domain::files_fusion::ExtendedFile};
+use crate::{fusion::{application::traits::PrepareFiles, domain::files_fusion::ExtendedFile}, utils::inner_errors::InnerErrors};
 
 // Структура отвечает за чтение файлов и получение их.
 #[derive(Debug)]
@@ -13,15 +13,19 @@ pub struct FilePreparation {
 
 impl FilePreparation {
 	/// Конструктор
-	pub fn new(paths: Vec<String>) -> Self {
+	pub fn new(paths: Vec<String>) -> Result<Self, InnerErrors> {
 		for file in &paths {
+			let mut lost_files= vec![];
 			if !Path::new(&file).is_file() {
-				// todo заменить здесь на создание массива нормальных ошибок, которые потом можно вывести
-				panic!("File {} does not exist.", file);
+				lost_files.push(file.clone());
+			}
+			if lost_files.len() > 0 {
+				eprintln!("Lost files: {:?}", lost_files);
+        return Err(InnerErrors::FilesNotFound(lost_files.join(" ")));
 			}
 		}
 		let file_paths = Arc::new(RwLock::new(paths));
-		Self { file_paths }
+		Ok(Self { file_paths })
 	}
 
 }

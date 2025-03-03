@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use crate::fusion::domain::files_fusion::ExtendedFile;
+use crate::{fusion::domain::files_fusion::ExtendedFile, utils::inner_errors::InnerErrors};
 
 /// Интерфейс описывающий поведение необходимое для подготовки файлов в формат
 /// пригодный для работы с ними.
@@ -13,7 +13,7 @@ pub trait SaveFuse {
   /**
    * Метод для сохранения соединенного файла.
    */
-  fn save_fuse(&self, fuse: Vec<u8>) -> std::io::Result<()>;
+  fn save_fuse(&self, fuse: Vec<u8>) -> Result<(), InnerErrors>;
 }
 
 /// Метод для доступа к файлам.

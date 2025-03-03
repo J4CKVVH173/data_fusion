@@ -1,7 +1,7 @@
 use std::path::Path;
 use std::fs;
 
-use crate::fusion::application::traits::{FileAccess, SaveFuse};
+use crate::{fusion::application::traits::{FileAccess, SaveFuse}, utils::inner_errors::InnerErrors};
 
 // Структура отвечает за чтение файлов и получение их.
 #[derive(Debug)]
@@ -12,14 +12,13 @@ pub struct DiskFileRepository {
 
 impl DiskFileRepository {
 	/// Конструктор
-	pub fn new(paths: Vec<String>) -> Self {
+	pub fn new(paths: Vec<String>) -> Result<Self, InnerErrors> {
 		for file in &paths {
 			if !Path::new(&file).is_file() {
-				// todo заменить здесь на создание массива нормальных ошибок, которые потом можно вывести
-				panic!("File {} does not exist.", file);
+				return Err(InnerErrors::FilesNotFound(file.clone()));
 			}
 		}
-		DiskFileRepository { file_paths: paths }
+		Ok(DiskFileRepository { file_paths: paths })
 	}
 }
 
@@ -32,8 +31,10 @@ impl FileAccess for DiskFileRepository {
 
 impl SaveFuse for DiskFileRepository {
 	/// Метод для сохранения соединенного файла в raw формате.
-	fn save_fuse(&self, fuse: Vec<u8>) -> std::io::Result<()> {
-		fs::write("fuse.raw", fuse)?;
-		Ok(())
+	fn save_fuse(&self, fuse: Vec<u8>) -> Result<(), InnerErrors> {
+		match fs::write("fuse.raw", fuse) {
+			Ok(_) => Ok(()),
+      Err(_) => Err(InnerErrors::CantWriteFuse),
+		}
 	}
 }
