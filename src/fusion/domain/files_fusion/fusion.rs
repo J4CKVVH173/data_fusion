@@ -1,7 +1,7 @@
 
 use super::ExtendedFile;
 
-use crate::lib::constants::{CHECK_BYTES, get_version};
+use crate::utils::constants::{CHECK_BYTES, get_version};
 
 #[derive(Debug)]
 pub struct Fusion {

@@ -1,4 +1,4 @@
-use crate::{fusion::domain::files_fusion::ExtendedFile, lib::constants::{CHECK_BYTES, get_version}};
+use crate::{fusion::domain::files_fusion::ExtendedFile, utils::constants::{CHECK_BYTES, get_version}};
 
 pub fn get_income_file(name: &str, body: Vec<u8>) -> ExtendedFile {
   ExtendedFile::new(String::from(name), body)

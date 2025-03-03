@@ -1,19 +1,17 @@
-use std::{fmt::Result, path::Path, sync::{Arc, RwLock}};
+use std::{path::Path, sync::{Arc, RwLock}};
 use std::thread::{available_parallelism, self};
 use std::fs;
 
-use crate::fusion::domain::files_fusion::{ExtendedFile, FileAccess};
+use crate::fusion::{application::traits::PrepareFiles, domain::files_fusion::ExtendedFile};
 
 // Структура отвечает за чтение файлов и получение их.
 #[derive(Debug)]
-pub struct FilesReader {
+pub struct FilePreparation {
 	// Вектор путей до файлов.
 	file_paths: Arc<RwLock<Vec<String>>>,
-	// Набор преобразованных файлов
-	files: Option<Arc<RwLock<Vec<ExtendedFile>>>>,
 }
 
-impl FilesReader {
+impl FilePreparation {
 		// Путь до файлов.
 	pub fn new(paths: Vec<String>) -> Self {
 		for file in &paths {
@@ -23,13 +21,17 @@ impl FilesReader {
 			}
 		}
 		let file_paths = Arc::new(RwLock::new(paths));
-		FilesReader { file_paths, files: None }
+		Self { file_paths }
 	}
 
-	pub fn prepare_files(&mut self) -> Result {
+}
+
+impl PrepareFiles for FilePreparation {
+  fn prepare_files(&mut self) -> Vec<ExtendedFile> {
 		let cores = available_parallelism().unwrap().get();
 		let paths_count = self.file_paths.read().unwrap().len();
 		let files: Arc<RwLock<Vec<ExtendedFile>>> = Arc::new(RwLock::new(Vec::with_capacity(paths_count)));
+
 		if cores > paths_count {
 			let mut threads: Vec<thread::JoinHandle<()>> = vec![];
 			for i in 0..paths_count {
@@ -61,14 +63,22 @@ impl FilesReader {
 		} else {
 			todo!()
 		}
-
-		self.files = Some(files);
-		return Ok(())
-	}
-}
-
-impl FileAccess for FilesReader {
-	fn get_files(&self) -> Vec<ExtendedFile> {
-		return vec![]
+		match Arc::try_unwrap(files) {
+			Ok(unwrapped_files) => {
+				match unwrapped_files.into_inner() {
+					Ok(files) => {
+            return files;
+          },
+          Err(_) => {
+            // todo заменить здесь на создание массива нормальных ошибок, которые потом можно вывести
+            todo!()
+          }
+				}
+			},
+			Err(_) => {
+        // todo заменить здесь на создание массива нормальных ошибок, которые потом можно вывести
+				todo!()
+      }
+		}
 	}
 }

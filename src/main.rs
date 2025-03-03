@@ -1,11 +1,12 @@
 mod cli;
 mod fusion;
-mod lib;
+mod utils;
 
 use clap::Parser;
 
 use self::cli::CLI;
-use self::fusion::infrastructure::FilesReader;
+use self::fusion::infrastructure::disk_file_repository::DiskFileRepository;
+use self::fusion::application::cli_process::CLIProcess;
 
 fn main() {
   let cli = match CLI::try_parse() {
@@ -15,11 +16,11 @@ fn main() {
     }
   };
 
-  let a = String::from("1;");
-  println!("{:?}", a.as_bytes());
+
   if cli.fusion.is_some() {
     let file_paths = cli.fusion.unwrap();
-    let mut files_reader = FilesReader::new(file_paths);
-    let _ = files_reader.prepare_files();
+
+    let file_repository = DiskFileRepository::new(file_paths);
+    let _ = CLIProcess::process(file_repository);
   }
 }

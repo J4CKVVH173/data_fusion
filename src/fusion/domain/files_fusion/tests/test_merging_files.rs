@@ -1,5 +1,3 @@
-use std::result;
-
 use crate::fusion::domain::files_fusion::fusion::Fusion;
 
 use super::fixtures::{get_income_file, get_result};
