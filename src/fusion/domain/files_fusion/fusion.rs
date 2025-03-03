@@ -42,7 +42,7 @@ impl Fusion {
   /// Собираем тело для расширенного файла.
   fn construct_body(file: ExtendedFile) -> Vec<u8> {
     let mut body = Vec::new();
-    body.extend(file.name.as_bytes());
+    body.extend(file.name.into_bytes());
     body.extend(file.body);
     body
   }
