@@ -1,4 +1,9 @@
-mod main;
-mod traits;
+#[cfg(test)]
+mod tests;
 
-pub use self::traits::{ExtendedFile, FileAccess};
+mod extended_file;
+mod traits;
+mod fusion;
+
+pub use self::traits::FileAccess;
+pub use self::extended_file::ExtendedFile;

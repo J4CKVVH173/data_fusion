@@ -5,9 +5,9 @@ use clap::Parser;
 pub struct CLI {
   #[arg(short, long, value_name = "fusion")]
   // Набор путей до файлов которые будут сливаться
-  fusion: Option<Vec<String>>,
+  pub fusion: Option<Vec<String>>,
   #[arg(short, long, value_name = "defusion")]
   // Путь до файла, который попытается система разобрать на составные файлы
-  defusion: Option<String>,
+  pub defusion: Option<String>,
 }
 
