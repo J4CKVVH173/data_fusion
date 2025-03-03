@@ -11,7 +11,7 @@ pub struct DiskFileRepository {
 }
 
 impl DiskFileRepository {
-		// Путь до файлов.
+	/// Конструктор
 	pub fn new(paths: Vec<String>) -> Self {
 		for file in &paths {
 			if !Path::new(&file).is_file() {
@@ -24,12 +24,14 @@ impl DiskFileRepository {
 }
 
 impl FileAccess for DiskFileRepository {
+	/// Метод для выдачи набора путей файлов, которые нужно преобразовать.
 	fn get_file_paths(&self) -> Vec<String> {
 		self.file_paths.clone()
 	}
 }
 
 impl SaveFuse for DiskFileRepository {
+	/// Метод для сохранения соединенного файла в raw формате.
 	fn save_fuse(&self, fuse: Vec<u8>) -> std::io::Result<()> {
 		fs::write("fuse.raw", fuse)?;
 		Ok(())

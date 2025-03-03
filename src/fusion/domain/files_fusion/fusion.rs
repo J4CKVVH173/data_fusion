@@ -3,6 +3,7 @@ use super::ExtendedFile;
 
 use crate::utils::constants::{CHECK_BYTES, get_version};
 
+/// Основная структура для выполнения логики объединения файлов.
 #[derive(Debug)]
 pub struct Fusion {
   files: Vec<ExtendedFile>
@@ -13,6 +14,7 @@ impl Fusion {
     Fusion { files }
   }
 
+  /// Объединяем все файлы в один с объединенным заголовком и телом.
   pub fn fuse(self) -> Vec<u8> {
     let mut result = Vec::new();
     result.extend_from_slice(&CHECK_BYTES);
@@ -26,9 +28,7 @@ impl Fusion {
     result
   }
 
-  /**
-   * Собираем заголовок для указанного файла
-   */
+  /// Собираем заголовок для указанного файла.
   fn construct_header(file: &ExtendedFile) -> Vec<u8> {
     let mut header = Vec::new();
     let name_length = file.name.len() as u16;
@@ -39,9 +39,7 @@ impl Fusion {
     header
   }
 
-  /**
-   * Собираем тело для расширенного файла.
-   */
+  /// Собираем тело для расширенного файла.
   fn construct_body(file: ExtendedFile) -> Vec<u8> {
     let mut body = Vec::new();
     body.extend(file.name.as_bytes());

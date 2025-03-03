@@ -12,7 +12,7 @@ pub struct FilePreparation {
 }
 
 impl FilePreparation {
-		// Путь до файлов.
+	/// Конструктор
 	pub fn new(paths: Vec<String>) -> Self {
 		for file in &paths {
 			if !Path::new(&file).is_file() {
@@ -27,6 +27,7 @@ impl FilePreparation {
 }
 
 impl PrepareFiles for FilePreparation {
+	/// Метод для подготовки файлов в формате пригодный для работы с ними.
   fn prepare_files(&mut self) -> Vec<ExtendedFile> {
 		let cores = available_parallelism().unwrap().get();
 		let paths_count = self.file_paths.read().unwrap().len();

@@ -6,7 +6,6 @@ use crate::fusion::domain::files_fusion::fusion::Fusion;
 use crate::fusion::application::file_preparation::FilePreparation;
 
 
-
 /**
  * Use case для работы с файлами через обработчик cli.
  */
@@ -14,6 +13,7 @@ pub struct CLIProcess;
 
 
 impl CLIProcess {
+  /// Полный кейс когда нужно для CLI подготовить спаянный файл.
   pub fn process<T: SaveFuse + FileAccess>(repository: T) -> Result {
     let files = repository.get_file_paths();
     let mut file_processor = FilePreparation::new(files);
