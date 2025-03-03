@@ -22,6 +22,7 @@ fn main() {
 
     let file_repository = DiskFileRepository::new(file_paths);
     let _ = CLIProcess::process(file_repository);
+    println!("Are fused.");
     return;
   }
 
